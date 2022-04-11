@@ -24,12 +24,21 @@
                 <td>{{$post['posted_by']}}</td>
                 <td>{{$post['created_at']}}</td>
                 <td>
-                    <a href="{{route('posts.show', ['post' => $post['id']])}}" class="btn btn-info">View</a>
-                    <a href="#" class="btn btn-primary">Edit</a>
-                    <a href="#" class="btn btn-danger">Delete</a>
+                  <x-button route="{{route('posts.show', ['post' => $post['id']])}}" type='{{"primary"}}' message='{{"View"}}'></x-button>
+                  <x-button route="{{route('posts.edit', ['post' => $post['id']])}}" type='{{"primary"}}' message='{{"Edit"}}'></x-button>
+                  <form id="delete" action="{{ route('posts.destroy', $post['id']) }}" method="post">
+                      <div class="modal-body">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-danger" onclick='return confirm("Are you sure?")'>Delete</button>
+                          <!-- <x-button route="#" type='{{"danger"}}' message='{{"Delete"}}'></x-button> -->
+                      </div>
+                  </form>
                 </td>
               </tr>
               @endforeach
+
             </tbody>
           </table>
+
 @endsection
