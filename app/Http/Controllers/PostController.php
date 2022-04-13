@@ -30,6 +30,7 @@ class PostController extends Controller
         request()->validate([
             'title' => 'required|unique:posts|min:3',
             'description' => 'required|min:10',
+            'post_creator' => 'required|exists:users,id',
         ]);
 
         //some logic to store data in db
@@ -68,16 +69,16 @@ class PostController extends Controller
         request()->validate([
             'title' => 'required|min:3',
             'description' => 'required|min:10',
+            'post_creator' => 'required|exists:users,id',
         ]);
 
-        $singlePost = Post::findOrFail($post);
-        if ($singlePost->title != request('title')) {
+        $post = Post::findOrFail($post);
+        if ($post->title != request('title')) {
             request()->validate([
                 'title' => 'required|unique:posts|min:3',
             ]);
         }
         
-        $post = Post::find($post);
         $data = request()->all();
 
         $post->title = $data['title'];
