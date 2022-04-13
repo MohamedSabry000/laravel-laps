@@ -28,5 +28,10 @@ Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.e
 Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
 
 Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->name('comment.store');
+// Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->name('comment.store');
 // Route::get('/posts/error', [PostController::class, 'error'])->name('posts.error');
+
+Route::post('/comments/{postId}', [CommentController::class, 'create'])->name('comments.create');
+Route::delete('/comments/{postId}/{commentId}', [CommentController::class, 'delete'])->name('comments.delete');
+Route::get('/comments/{postId}/{commentId}', [CommentController::class, 'view'])->name('comments.view');
+Route::patch('/comments/{postId}/{commentId}', [CommentController::class, 'edit'])->name('comments.update');

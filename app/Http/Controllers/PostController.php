@@ -76,7 +76,8 @@ class PostController extends Controller
         // unset($this->posts[$id]);
         // return view('posts.index', ['allPosts' => $this->posts]);
         $singlePost = Post::findOrFail($id);
-        $singlePost->delete();
+        // $singlePost->delete();
+        $singlePost->delete()->comments()->delete();
         return redirect()->route('posts.index');
     }
 }
