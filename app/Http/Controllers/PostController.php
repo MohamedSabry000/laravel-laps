@@ -3,98 +3,80 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Models\User;
 
 class PostController extends Controller
 {
-    public $posts = [
-        ['id' => 1, 'title' => 'first post', 'desc' => 'Description 1', 'posted_by' => 'ahmed', 'created_at' => '2022-04-11'],
-        ['id' => 2, 'title' => 'second post', 'desc' => 'Description 2', 'posted_by' => 'mohamed', 'created_at' => '2022-04-11'],
-        ['id' => 3, 'title' => 'third post', 'desc' => 'Description 2', 'posted_by' => 'mohamed', 'created_at' => '2022-04-11'],
-        ['id' => 4, 'title' => 'fourth post', 'desc' => 'Description 2', 'posted_by' => 'mohamed', 'created_at' => '2022-04-11'],
-    ];
-
+    //
     public function index()
     {
-        // $posts = [
-        //     ['id' => 1, 'title' => 'first post', 'posted_by' => 'ahmed', 'created_at' => '2022-04-11'],
-        //     ['id' => 2, 'title' => 'second post', 'posted_by' => 'mohamed', 'created_at' => '2022-04-11'],
-        // ];
-
-        // dd($posts); //stop execution and dump the variable
+        $posts = Post::paginate(8);
         return view('posts.index', [
-            'allPosts' => $this->posts,
+            'allPosts' => $posts,
         ]);
     }
 
     public function create()
     {
-        return view('posts.create');
+        $users = User::all();
+        return view('posts.create', [
+            'users' => $users,
+        ]);
     }
-
+    //to create a new post
     public function store()
     {
         //some logic to store data in db
-        //redirect to /posts
-        array_push($this->posts, [
-            'id' => count($this->posts) + 1,
-            'title' => request('title'),
-            'desc' => request('desc'),
-            'posted_by' => request('posted_by'),
-            'created_at' => date('Y-m-d'),
-        ]);
-        // dd($this->posts);
-        // return redirect()->route('posts.index');
-        return view('posts.index', ['allPosts' => $this->posts]);
+        $data = request()->all();
+        //insert into database
+        Post::create(
+            [
+                'title' => $data['title'],
+                'description' => $data['description'],
+                'user_id' => $data['post_creator'],
+            ]
+        );
+        return to_route('posts.index');
     }
-
+    // to show a single post
     public function show($post)
     {
+        $post = Post::find($post);
         // dd($post);
-        if (isset($post) && is_numeric($post) && $post <= count($this->posts)) {
-            $key = array_search($post, array_column($this->posts, 'id'));
-            if ($key !== false) {
-                return view('posts.show', [
-                    'post' => $this->posts[$key],
-                ]);
-            }
-        }
-        return view('posts.error');
+        return view('posts.show', [
+            'posts' => $post,
+        ]);
     }
 
-    // TOOD:: CREATE EDIT, UPDATE, DELETE
-    public function edit($post)
+    public function edit($postId)
     {
-        if (isset($post) && is_numeric($post) && $post <= count($this->posts)) {
-            $key = array_search($post, array_column($this->posts, 'id'));
-            if ($key !== false) {
-                return view('posts.edit', [
-                    'post' => $this->posts[$key],
-                ]);
-            }
-        }
-        
-        return view('posts.error');
-    }
-    public function update()
-    {
-        return view('posts.index');
+        $post = Post::find($postId);
+        return view('posts.edit', [
+            'post' => $post,
+            'users' => User::all(),
+        ]);
     }
 
-    public function destroy($post)
+    public function update($post)
     {
-        if (isset($post) && is_numeric($post) && $post <= count($this->posts)) {
-            $key = array_search($post, array_column($this->posts, 'id'));
-            if ($key !== false) {
-                // dd($this->posts[$key]);
-                unset($this->posts[$key]);
-                return view('posts.index', ['allPosts' => $this->posts]);
-            }
-        }
+        $post = Post::find($post);
+        $data = request()->all();
+
+        $post->title = $data['title'];
+        $post->description = $data['description'];
+        $post['user_id'] = $data['post_creator'];
         
-        return view('posts.error');
+        $post->update();
+        return to_route('posts.index');
     }
-    public function error()
+
+    public function destroy($id)
     {
-        return view('posts.error');
+        // unset($this->posts[$id]);
+        // return view('posts.index', ['allPosts' => $this->posts]);
+        $singlePost = Post::findOrFail($id);
+        $singlePost->delete();
+        return redirect()->route('posts.index');
     }
 }

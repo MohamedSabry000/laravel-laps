@@ -1,29 +1,27 @@
 @extends('layouts.app')
 
-@section('title')Create @endsection
-
 @section('content')
-      <form method="PUT" action="{{route('posts.update', ['post' => $post['id']])}}">
-        @csrf
+<form method="POST" action="{{route('posts.update', ['post' => $post['id']])}}">
+    @csrf
+    @method('PUT')
+    <div class="container mt-5">
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Title</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$post['title']}}">
-          </div>
-          <div class="mb-3">
+            <input type="text" name="title" class="form-control" id="exampleFormControlInput1" value="{{$post->title}}">
+        </div>
+        <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">{{$post['desc']}}</textarea>
-          </div>
-
-          <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Post Creator</label>
-            <select class="form-control">
-              
-                <option>Ahmed</option>
-            </select>
-       </div>
-
-          <div class="mb-3">
-                <button type="submit" class="btn btn-success">Create Post</button>
-          </div>
-        </form>
+            <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3">
+                {{$post->description}}
+            </textarea>
+        </div>
+        <select name="post_creator" class="form-select" aria-label="Default select example">Post Creator
+            @foreach($users as $user)
+                <option value="{{$user->id}}" {{$post->user_id == $user->id ? 'selected' : ''}}>{{$user->name}}</option>
+            @endforeach
+        </select>
+        <br>
+        <button type="submit" class="btn btn-success">Update</button>
+    </div>
+</form>
 @endsection
