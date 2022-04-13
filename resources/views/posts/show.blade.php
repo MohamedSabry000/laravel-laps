@@ -47,6 +47,13 @@
             </p>
         </h5>
 
+            <h5 class="card-title fs-4">
+                <span class="fw-bold">Slug:</span>
+                <p class="d-inline-block card-text text-muted">
+                    {{$posts->slug}}
+                </p>
+            </h5>
+
     </div>
 </div>
 <!-- Comments -->

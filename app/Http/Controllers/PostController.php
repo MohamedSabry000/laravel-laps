@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
+// use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class PostController extends Controller
 {
     //
     public function index()
     {
-        $posts = Post::paginate(8);
+        $posts = Post::orderBy('id','desc')->paginate(10);
         return view('posts.index', [
             'allPosts' => $posts,
         ]);
@@ -36,6 +37,7 @@ class PostController extends Controller
         //some logic to store data in db
         $data = request()->all();
         //insert into database
+
         Post::create(
             [
                 'title' => $data['title'],
