@@ -27,6 +27,11 @@ class PostController extends Controller
     //to create a new post
     public function store()
     {
+        request()->validate([
+            'title' => 'required|unique:posts|min:3',
+            'description' => 'required|min:10',
+        ]);
+
         //some logic to store data in db
         $data = request()->all();
         //insert into database
@@ -60,6 +65,18 @@ class PostController extends Controller
 
     public function update($post)
     {
+        request()->validate([
+            'title' => 'required|min:3',
+            'description' => 'required|min:10',
+        ]);
+
+        $singlePost = Post::findOrFail($post);
+        if ($singlePost->title != request('title')) {
+            request()->validate([
+                'title' => 'required|unique:posts|min:3',
+            ]);
+        }
+        
         $post = Post::find($post);
         $data = request()->all();
 
