@@ -6,12 +6,18 @@ use App\Http\Requests\StorePostRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
+
+// use Illuminate\Http\File;
+
+// use File;
 
 // use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class PostController extends Controller
 {
     //
+    
     public function index()
     {
         $posts = Post::orderBy('id', 'desc')->paginate(10);
@@ -42,7 +48,7 @@ class PostController extends Controller
 
         // dd($request);
         if ($request->hasFile('avatar')) {
-            $filename = $request->avatar->getClientOriginalName();
+            $filename = time() . $request->avatar->getClientOriginalName();
             // dd($filename);
             $request->avatar->storeAs('images', $filename, 'public');
         }
@@ -75,7 +81,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function update($post, StorePostRequest $req)
+    public function update($post, Request $request, StorePostRequest $req)
     {
         // request()->validate([
         //     'title' => 'required|unique:posts,title,{{$post}}|min:3',
@@ -92,8 +98,16 @@ class PostController extends Controller
         
         $data = request()->all();
 
+        // dd($request);
+        if ($request->hasFile('avatar')) {
+            $filename = time() . $request->avatar->getClientOriginalName();
+            // dd($filename);
+            $request->avatar->storeAs('images', $filename, 'public');
+        }
+
         $post->title = $data['title'];
         $post->description = $data['description'];
+        isset($filename) && $post->avatar = $filename;
         $post['user_id'] = $data['post_creator'];
         
         $post->update();
@@ -105,6 +119,11 @@ class PostController extends Controller
         // unset($this->posts[$id]);
         // return view('posts.index', ['allPosts' => $this->posts]);
         $singlePost = Post::findOrFail($id);
+        
+        if (file_exists(public_path('storage/images/'. $singlePost->avatar))) {
+            unlink(public_path('storage/images/'. $singlePost->avatar));
+        }
+
         $singlePost->comments()->delete();
         // $singlePost->delete();
         $singlePost->delete();

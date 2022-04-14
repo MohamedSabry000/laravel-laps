@@ -2,7 +2,7 @@
 
 @section('content')
 
-<form method="POST" action="{{route('posts.update', ['post' => $post['id']])}}">
+<form method="POST" action="{{route('posts.update', ['post' => $post['id']])}}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="container mt-5">
@@ -21,6 +21,10 @@
                 <option value="{{$user->id}}" {{$post->user_id == $user->id ? 'selected' : ''}}>{{$user->name}}</option>
             @endforeach
         </select>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Avatar</label>
+            <input id="avatar" type="file" class="form-control" name="avatar">
+        </div>
         <input type="hidden" name="id" value="{{$post->id}}" />
         <br>
         <button type="submit" class="btn btn-success">Update</button>
