@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
+
 // use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class PostController extends Controller
@@ -12,7 +14,7 @@ class PostController extends Controller
     //
     public function index()
     {
-        $posts = Post::orderBy('id','desc')->paginate(10);
+        $posts = Post::orderBy('id', 'desc')->paginate(10);
         return view('posts.index', [
             'allPosts' => $posts,
         ]);
@@ -26,7 +28,7 @@ class PostController extends Controller
         ]);
     }
     //to create a new post
-    public function store()
+    public function store(Request $request)
     {
         request()->validate([
             'title' => 'required|unique:posts|min:3',
@@ -38,11 +40,18 @@ class PostController extends Controller
         $data = request()->all();
         //insert into database
 
+        // dd($request);
+        if ($request->hasFile('avatar')) {
+            $filename = $request->avatar->getClientOriginalName();
+            // dd($filename);
+            $request->avatar->storeAs('images', $filename, 'public');
+        }
         Post::create(
             [
                 'title' => $data['title'],
                 'description' => $data['description'],
                 'user_id' => $data['post_creator'],
+                'avatar'=>$filename,
             ]
         );
         return to_route('posts.index');
@@ -66,20 +75,20 @@ class PostController extends Controller
         ]);
     }
 
-    public function update($post)
+    public function update($post, StorePostRequest $req)
     {
-        request()->validate([
-            'title' => 'required|min:3',
-            'description' => 'required|min:10',
-            'post_creator' => 'required|exists:users,id',
-        ]);
+        // request()->validate([
+        //     'title' => 'required|unique:posts,title,{{$post}}|min:3',
+        //     'description' => 'required|min:10',
+        //     'post_creator' => 'required|exists:users,id',
+        // ]);
 
         $post = Post::findOrFail($post);
-        if ($post->title != request('title')) {
-            request()->validate([
-                'title' => 'required|unique:posts|min:3',
-            ]);
-        }
+        // if ($post->title != request('title')) {
+        //     request()->validate([
+        //         'title' => 'required|unique:posts|min:3',
+        //     ]);
+        // }
         
         $data = request()->all();
 
@@ -96,8 +105,9 @@ class PostController extends Controller
         // unset($this->posts[$id]);
         // return view('posts.index', ['allPosts' => $this->posts]);
         $singlePost = Post::findOrFail($id);
+        $singlePost->comments()->delete();
         // $singlePost->delete();
-        $singlePost->delete()->comments()->delete();
+        $singlePost->delete();
         return redirect()->route('posts.index');
     }
 }

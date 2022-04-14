@@ -15,7 +15,7 @@ class PruneOldPostsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 30;
-    protected $post;
+    public $post;
 
     /**
      * Create a new job instance.

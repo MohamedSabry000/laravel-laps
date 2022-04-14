@@ -21,6 +21,7 @@
                 <option value="{{$user->id}}" {{$post->user_id == $user->id ? 'selected' : ''}}>{{$user->name}}</option>
             @endforeach
         </select>
+        <input type="hidden" name="id" value="{{$post->id}}" />
         <br>
         <button type="submit" class="btn btn-success">Update</button>
     </div>

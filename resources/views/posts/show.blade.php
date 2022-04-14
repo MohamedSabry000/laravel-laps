@@ -54,6 +54,10 @@
                 </p>
             </h5>
 
+            @if($posts->avatar)
+                <img class="image rounded-circle" src="{{asset('/storage/images/'.$posts->avatar)}}" alt="profile_image" style="width: 80px;height: 80px; padding: 10px; margin: 0px; ">
+            @endif
+
     </div>
 </div>
 <!-- Comments -->

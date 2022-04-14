@@ -4,7 +4,7 @@
 
 @section('content')
 
-<form method="POST" action="{{route('posts.store')}}">
+<form method="POST" action="{{route('posts.store')}}"  enctype="multipart/form-data">
     @csrf
     <div class="my-4">
         <label for="exampleFormControlInput1" class="form-label">Title</label>
@@ -22,6 +22,10 @@
             <option value="{{$user->id}}">{{$user->name}}</option>
             @endforeach
         </select>
+    </div>
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Avatar</label>
+        <input id="avatar" type="file" class="form-control" name="avatar">
     </div>
 
     <div class="mb-3">
