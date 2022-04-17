@@ -57,6 +57,17 @@
                                     {{ __('Login') }}
                                 </button>
 
+                                <a href="{{ url('auth/google') }}" style="margin-top: 0px !important;background: green;color: #ffffff;padding: 5px;border-radius:7px;" class="ml-2">
+                                    <strong>Google Login</strong>
+                                </a> 
+                                <div class="form-group row mb-0 mt-3">
+                                    <div class="col-md-8 offset-md-4">
+                                        <a href="{{ url('auth/github') }}" class="btn btn-warning">
+                                            {{ __('Login with Github') }}
+                                        </a>
+                                    </div>
+                                </div>
+
                                 @if (Route::has('password.request'))
                                     <a class="btn btn-link" href="{{ route('password.request') }}">
                                         {{ __('Forgot Your Password?') }}

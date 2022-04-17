@@ -5,6 +5,9 @@ use App\Http\Controllers\PostController; //== require
 use App\Http\Controllers\CommentController; //== require
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Controllers\Auth\GoogleSocialiteController;
+use App\Http\Controllers\Auth\SocialGithubController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -42,3 +45,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('auth/google', [GoogleSocialiteController::class, 'redirectToGoogle']);
+Route::get('callback/google', [GoogleSocialiteController::class, 'handleCallback']);
+
+Route::get('auth/github', [SocialGithubController::class, 'redirectToGithub']);
+Route::get('callback/github', [SocialGithubController::class, 'handleCallback']);
